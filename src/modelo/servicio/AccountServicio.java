@@ -68,14 +68,18 @@ public class AccountServicio implements IAccountServicio {
 			movement.setAmount(cantidadBD);
 			movement.setDatetime(LocalDateTime.now());
 
-			// Relación bidireccional
 			movement.setAccountOrigen(accountOrigen);
 			movement.setAccountDestino(accountDestino);
-			// Son prescindibles y no recomendables en navegación bidireccional porque una
-			// Account puede tener numerosos movimientos
+			// Son prescindibles y no se recomienda navegación bidireccional en memoria porque una
+			// Account puede tener numerosos movimientos. Aún así es responsabilidad del
+			// developper mantener las relaciones bidireccionales en memoria.
+			//Nosotros lo vamos a evitar para no recuperar todos los movimientos de una cuenta, ya que no vamos 
+			//seguir trabajando con todos los movimientos en memoria
 //					accountOrigen.getAccMovementsOrigen().add(movement);
 //					accountDestino.getAccMovementsDest().add(movement);
 
+			// En una relación 1:N en una transaction, basta con guardar el lado
+			// propietario: movement
 //					session.saveOrUpdate(accountOrigen);
 //					session.saveOrUpdate(accountDestino);
 			session.save(movement);
@@ -123,7 +127,6 @@ public class AccountServicio implements IAccountServicio {
 			movement.setAmount(cantidadBD);
 			movement.setDatetime(LocalDateTime.now());
 
-			// Relación bidireccional
 			movement.setAccountOrigen(account);
 			movement.setAccountDestino(account);
 
@@ -198,7 +201,7 @@ public class AccountServicio implements IAccountServicio {
 			tx.commit();
 			exito = true;
 		} catch (Exception ex) {
-			System.out.println("Ha ocurrido una excepción en create Dept: " + ex.getMessage());
+			System.out.println("Ha ocurrido una excepción en delete Account: " + ex.getMessage());
 			if (tx != null) {
 				tx.rollback();
 			}
